@@ -3,10 +3,15 @@ import {
   View, Text, StyleSheet, ScrollView, SafeAreaView,
   TouchableOpacity, ActivityIndicator, Linking
 } from 'react-native';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AuthContext } from '../../context/AuthContext';
 import api, { apiBaseUrl } from '../../services/api';
 
-const MEAL_ICONS = { Morning: 'Morning', Afternoon: 'Afternoon', Evening: 'Evening' };
+const MEAL_ICONS = {
+  Morning: { icon: 'sun', type: FontAwesome5, color: '#FFA000' },
+  Afternoon: { icon: 'cloud-sun', type: FontAwesome5, color: '#FFB300' },
+  Evening: { icon: 'moon', type: FontAwesome5, color: '#3949AB' }
+};
 
 export default function DietScreen({ navigation }) {
   const { userToken } = useContext(AuthContext);
@@ -63,7 +68,7 @@ export default function DietScreen({ navigation }) {
             style={[styles.petChip, selectedPet?._id === p._id && styles.petChipActive]}
             onPress={() => setSelectedPet(p)}
           >
-            <Text style={[styles.petChipText, selectedPet?._id === p._id && styles.petChipTextActive]}>{p.name}</Text>
+            <Text style={[styles.petChipText, selectedPet?._id === p._id && styles.petChipTextActive]}><FontAwesome5 name="paw" size={12} color={selectedPet?._id === p._id ? "#FFF" : "#888"} /> {p.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -86,7 +91,7 @@ export default function DietScreen({ navigation }) {
                 <View style={styles.iconBox}><View style={styles.dietCircle} /></View>
                 <View style={{ flex: 1, marginLeft: 12 }}>
                   <Text style={styles.cardTitle}>{r.categoryName}</Text>
-                  <Text style={styles.cardSub}>📅 Started: {formatDate(r.startDate)}</Text>
+                  <Text style={styles.cardSub}><FontAwesome5 name="calendar-alt" size={12} color="#888" /> Started: {formatDate(r.startDate)}</Text>
                 </View>
                 <View style={[styles.badge, r.isActive ? styles.badgeActive : styles.badgeInactive]}>
                   <Text style={styles.badgeText}>{r.isActive ? 'Active' : 'Inactive'}</Text>
@@ -161,7 +166,7 @@ export default function DietScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F4F6F8' },
   header: { backgroundColor: '#5EBFA4', height: 115, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 50 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 35 },
   backArrow: { fontSize: 24, color: '#FFF', fontWeight: 'bold' },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#FFF' },
   petBar: { backgroundColor: '#FFF', borderBottomWidth: 1, borderBottomColor: '#EEE', maxHeight: 60 },

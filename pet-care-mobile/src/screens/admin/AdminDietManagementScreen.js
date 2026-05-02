@@ -276,7 +276,7 @@ export default function AdminDietManagementScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
-  header: { backgroundColor: '#5EBFA4', height: 110, borderBottomLeftRadius: 25, borderBottomRightRadius: 25, paddingHorizontal: 20, paddingTop: 50 },
+  header: { backgroundColor: '#5EBFA4', height: 110, borderBottomLeftRadius: 25, borderBottomRightRadius: 25, paddingHorizontal: 20, paddingTop: 35 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   backArrow: { fontSize: 24, color: '#FFF', fontWeight: 'bold' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#FFF' },
