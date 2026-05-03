@@ -1,3 +1,4 @@
+const { persistMedia } = require('../utils/persistMedia');
 const Appointment = require('../models/Appointment');
 const VetSchedule = require('../models/VetSchedule');
 const Pet = require('../models/Pet');
@@ -212,8 +213,7 @@ const uploadInvoice = async (req, res) => {
     }
 
     if (req.file) {
-      // The frontend can fetch images from the /uploads directory
-      appointment.invoiceUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      appointment.invoiceUrl = await persistMedia(req.file, 'appointments-invoices');
       const updatedAppointment = await appointment.save();
       res.status(200).json(updatedAppointment);
     } else {
@@ -237,7 +237,7 @@ const addVaccineRecord = async (req, res) => {
     const { vaccineName, dateAdministered, nextDueDate, notes, status } = req.body;
     let documentUrl = null;
     if (req.file) {
-      documentUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      documentUrl = await persistMedia(req.file, 'vaccine-documents');
     }
 
     const record = await PetVaccineRecord.create({
@@ -270,7 +270,7 @@ const addMedicationRecord = async (req, res) => {
     const { medicationName, dosage, frequency, startDate, endDate, notes } = req.body;
     let prescriptionFileUrl = null;
     if (req.file) {
-      prescriptionFileUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      prescriptionFileUrl = await persistMedia(req.file, 'medication-prescriptions');
     }
 
     const record = await MedicationRecord.create({
@@ -312,7 +312,7 @@ const addDietRecord = async (req, res) => {
 
     let dietChartUrl = null;
     if (req.file) {
-      dietChartUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      dietChartUrl = await persistMedia(req.file, 'diet-charts');
     }
 
     const record = await FeedingRecord.create({

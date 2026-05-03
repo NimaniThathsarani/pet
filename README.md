@@ -66,6 +66,10 @@ For physical devices testing the app, the API must be reachable on your LAN or v
    | `ALLOW_INSECURE_GOOGLE_AUTH` | No | Must be **`true`** to allow legacy `POST /auth/google` (unverified payloads). Disabled by default |
    | `MONGO_SKIP_DOH_FALLBACK` | No | Set to **`1`** to skip HTTPS-DNS SRV fallback (only matters for `mongodb+srv://` URIs) |
    | `MONGO_USE_SYSTEM_DNS` | No | Set to **`1`** to skip forcing public DNS before the first SRV connect attempt |
+   | `CLOUDINARY_URL` | No | If set (or see below), pet/boarding/vaccine/etc. uploads go to **Cloudinary** and only the HTTPS URL is stored in MongoDB |
+   | `CLOUDINARY_CLOUD_NAME` | With key/secret | Alternative to `CLOUDINARY_URL`; use together with `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET` |
+   | `CLOUDINARY_API_KEY` | With cloud name | Same |
+   | `CLOUDINARY_API_SECRET` | With cloud name | Same |
 
 3. **Run**
 
