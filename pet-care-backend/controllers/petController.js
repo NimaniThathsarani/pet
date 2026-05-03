@@ -1,4 +1,5 @@
 const Pet = require('../models/Pet');
+const { persistMedia } = require('../utils/persistMedia');
 
 const createPet = async (req, res) => {
   try {
@@ -9,9 +10,7 @@ const createPet = async (req, res) => {
       throw new Error('Pet name and species are required');
     }
 
-    const profileImage = req.file
-      ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
-      : undefined;
+    const profileImage = await persistMedia(req.file, 'pets');
 
     const normalizedGender = gender ? (gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase()) : undefined;
 

@@ -1,3 +1,4 @@
+const { persistMedia } = require('../utils/persistMedia');
 const BoardingRoom = require('../models/BoardingRoom');
 const BoardingBooking = require('../models/BoardingBooking');
 const Pet = require('../models/Pet');
@@ -11,9 +12,7 @@ const createRoom = async (req, res) => {
       res.status(400); throw new Error('Name, daily rate, and amenities are required');
     }
     
-    const image = req.file
-      ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
-      : undefined;
+    const image = await persistMedia(req.file, 'boarding-rooms');
 
     const room = await BoardingRoom.create({ name, dailyRate, amenities, capacity, image });
     res.status(201).json(room);
@@ -47,7 +46,7 @@ const updateRoom = async (req, res) => {
     if (isActive !== undefined) room.isActive = isActive;
 
     if (req.file) {
-      room.image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      room.image = await persistMedia(req.file, 'boarding-rooms');
     }
 
     await room.save();

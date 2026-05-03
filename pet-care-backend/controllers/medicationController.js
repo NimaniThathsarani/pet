@@ -1,3 +1,4 @@
+const { persistMedia } = require('../utils/persistMedia');
 const MedicationRecord = require('../models/MedicationRecord');
 const Pet = require('../models/Pet');
 
@@ -95,7 +96,7 @@ const updateRecordAdmin = async (req, res) => {
         if (medicationName) record.medicationName = medicationName;
 
         if (req.file) {
-            record.prescriptionFileUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+            record.prescriptionFileUrl = await persistMedia(req.file, 'medication-prescriptions');
         }
 
         await record.save();

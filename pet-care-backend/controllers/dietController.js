@@ -1,3 +1,4 @@
+const { persistMedia } = require('../utils/persistMedia');
 const FeedingRecord = require('../models/FeedingRecord');
 const Pet = require('../models/Pet');
 
@@ -108,7 +109,9 @@ const updateFeedingRecordAdmin = async (req, res) => {
     if (feedingFrequency !== undefined) record.feedingFrequency = feedingFrequency;
     if (waterIntake !== undefined) record.waterIntake = waterIntake;
 
-    if (req.file) { record.dietChartUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`; }
+    if (req.file) {
+      record.dietChartUrl = await persistMedia(req.file, 'diet-charts');
+    }
 
     await record.save();
     res.status(200).json(record);

@@ -1,3 +1,4 @@
+const { persistMedia } = require('../utils/persistMedia');
 const GroomingService = require('../models/GroomingService');
 const GroomingBooking = require('../models/GroomingBooking');
 const Pet = require('../models/Pet');
@@ -12,13 +13,14 @@ const createService = async (req, res) => {
       throw new Error('All fields are required');
     }
 
-    let beforeImage, afterImage;
+    let beforeImage;
+    let afterImage;
     if (req.files) {
       if (req.files.beforeImage) {
-        beforeImage = `data:${req.files.beforeImage[0].mimetype};base64,${req.files.beforeImage[0].buffer.toString('base64')}`;
+        beforeImage = await persistMedia(req.files.beforeImage[0], 'grooming-services');
       }
       if (req.files.afterImage) {
-        afterImage = `data:${req.files.afterImage[0].mimetype};base64,${req.files.afterImage[0].buffer.toString('base64')}`;
+        afterImage = await persistMedia(req.files.afterImage[0], 'grooming-services');
       }
     }
 
@@ -60,10 +62,10 @@ const updateService = async (req, res) => {
 
     if (req.files) {
       if (req.files.beforeImage) {
-        service.beforeImage = `data:${req.files.beforeImage[0].mimetype};base64,${req.files.beforeImage[0].buffer.toString('base64')}`;
+        service.beforeImage = await persistMedia(req.files.beforeImage[0], 'grooming-services');
       }
       if (req.files.afterImage) {
-        service.afterImage = `data:${req.files.afterImage[0].mimetype};base64,${req.files.afterImage[0].buffer.toString('base64')}`;
+        service.afterImage = await persistMedia(req.files.afterImage[0], 'grooming-services');
       }
     }
 
