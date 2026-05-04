@@ -19,10 +19,18 @@ const generateToken = (id) => {
   });
 };
 
-// Nodemailer transporter helper
+const SMTP_TIMEOUT_MS = Math.min(
+  Math.max(Number(process.env.SMTP_SEND_TIMEOUT_MS) || 15000, 5000),
+  60000
+);
+
+/**
+ * Sends OTP email when SMTP is configured. Never throws — callers rely on return value.
+ * Gmail from Railway can otherwise hang for minutes (blocked port, bad app password, etc.),
+ * which caused mobile clients to hit Axios 30s timeouts.
+ * @returns {Promise<boolean>} true if mail was accepted by SMTP
+ */
 const sendEmailOTP = async (email, otp, purpose = 'registration') => {
-  // If you configure EMAIL_USER and EMAIL_PASS in .env, it will use them.
-  // Otherwise, fallback to a console.log for easy development testing.
   const subject = purpose === 'login'
     ? 'Pet Care App - Login OTP'
     : 'Pet Care App - Verification OTP';
@@ -30,28 +38,42 @@ const sendEmailOTP = async (email, otp, purpose = 'registration') => {
     ? `Your OTP for login is: ${otp}`
     : `Your OTP for registration is: ${otp}`;
 
-  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+  const user = process.env.EMAIL_USER?.trim();
+  const pass = process.env.EMAIL_PASS?.trim();
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject,
-      text
-    };
-
-    await transporter.sendMail(mailOptions);
-  } else {
-    // No SMTP: OTP is still returned in the JSON body from sendOTP (mobile needs it on Railway, etc.)
+  if (!user || !pass) {
     console.warn(
       `[OTP] EMAIL_USER/EMAIL_PASS not set — OTP for ${email} (${purpose}): ${otp} (also sent in API response)`
     );
+    return false;
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+    connectionTimeout: 12000,
+    greetingTimeout: 12000,
+    socketTimeout: 12000,
+  });
+
+  const mailOptions = {
+    from: user,
+    to: email,
+    subject,
+    text,
+  };
+
+  try {
+    await Promise.race([
+      transporter.sendMail(mailOptions),
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error(`SMTP send timed out after ${SMTP_TIMEOUT_MS}ms`)), SMTP_TIMEOUT_MS);
+      }),
+    ]);
+    return true;
+  } catch (err) {
+    console.error(`[OTP] SMTP send failed for ${email} (${purpose}):`, err?.message || err);
+    return false;
   }
 };
 
@@ -95,11 +117,16 @@ const sendOTP = async (req, res) => {
       otp
     });
 
-    // Send the email
-    await sendEmailOTP(email.trim(), otp, purpose);
+    const emailSent = await sendEmailOTP(email.trim(), otp, purpose);
 
-    const responsePayload = { message: `OTP sent successfully for ${purpose}` };
-    if (!mailConfigured) {
+    const responsePayload = {
+      message: emailSent
+        ? `OTP sent successfully for ${purpose}`
+        : mailConfigured
+          ? 'Email could not be delivered in time; use the code below to continue.'
+          : `OTP generated for ${purpose}`,
+    };
+    if (!emailSent) {
       responsePayload.otp = otp;
     }
 
