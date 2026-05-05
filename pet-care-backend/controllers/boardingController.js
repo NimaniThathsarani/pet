@@ -19,7 +19,7 @@ const createRoom = async (req, res) => {
     if (!name || !dailyRate || !amenities) {
       res.status(400); throw new Error('Name, daily rate, and amenities are required');
     }
-    
+
     const image = await persistMedia(req.file, 'boarding-rooms');
 
     const room = await BoardingRoom.create({ name, dailyRate, amenities, capacity, image });
@@ -97,12 +97,12 @@ const updateRoom = async (req, res) => {
   try {
     const room = await BoardingRoom.findById(req.params.id);
     if (!room) { res.status(404); throw new Error('Room not found'); }
-    
+
     const { name, dailyRate, amenities, capacity, isActive } = req.body;
-    room.name      = name       ?? room.name;
-    room.dailyRate = dailyRate  ?? room.dailyRate;
-    room.amenities = amenities  ?? room.amenities;
-    room.capacity  = capacity   ?? room.capacity;
+    room.name = name ?? room.name;
+    room.dailyRate = dailyRate ?? room.dailyRate;
+    room.amenities = amenities ?? room.amenities;
+    room.capacity = capacity ?? room.capacity;
     if (isActive !== undefined) room.isActive = isActive;
 
     if (req.file) {

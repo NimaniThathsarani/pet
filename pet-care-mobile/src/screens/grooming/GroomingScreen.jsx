@@ -229,7 +229,7 @@ const ServiceIcon = ({ name = '', size = 26, color = '#5EBFA4' }) => {
               <View key={b._id} style={styles.bookingCard}>
                 <View style={styles.bookingTop}>
                   <View style={styles.bookingIcon}>
-                    <Text style={{ fontSize: 22 }}>{serviceEmoji(b.service?.name)}</Text>
+                    <ServiceIcon name={b.service?.name} size={22} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.bookingService}>{b.service?.name || '—'}</Text>
