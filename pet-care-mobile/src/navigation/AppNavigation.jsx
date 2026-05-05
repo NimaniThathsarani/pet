@@ -14,6 +14,7 @@ import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 import AdminVetManagementScreen from '../screens/admin/AdminVetManagementScreen';
 import AdminAppointmentApprovalScreen from '../screens/admin/AdminAppointmentApprovalScreen';
 import AdminVaccineCatalogScreen from '../screens/admin/AdminVaccineCatalogScreen';
+import AdminVaccineRecordManagementScreen from '../screens/admin/AdminVaccineRecordManagementScreen';
 import AdminGroomingManagementScreen from '../screens/admin/AdminGroomingManagementScreen';
 import AdminBoardingManagementScreen from '../screens/admin/AdminBoardingManagementScreen';
 import AdminDietManagementScreen from '../screens/admin/AdminDietManagementScreen';
@@ -58,6 +59,7 @@ export default function AppNavigator() {
             <Stack.Screen name="AdminVetManagement" component={AdminVetManagementScreen} />
             <Stack.Screen name="AdminAppointmentApproval" component={AdminAppointmentApprovalScreen} />
             <Stack.Screen name="AdminVaccineCatalog" component={AdminVaccineCatalogScreen} />
+            <Stack.Screen name="AdminVaccineRecords" component={AdminVaccineRecordManagementScreen} />
             <Stack.Screen name="AdminGroomingManagement" component={AdminGroomingManagementScreen} />
             <Stack.Screen name="AdminBoardingManagement" component={AdminBoardingManagementScreen} />
             <Stack.Screen name="AdminDietManagement" component={AdminDietManagementScreen} />

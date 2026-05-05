@@ -77,15 +77,14 @@ const deleteCatalogVaccine = async (req, res) => {
       res.status(404);
       throw new Error('Vaccine not found');
     }
-    const inUse = await PetVaccineRecord.countDocuments({
-      catalogVaccine: vaccine._id,
-    });
-    if (inUse > 0) {
-      res.status(400);
-      throw new Error(
-        'Cannot delete: this vaccine appears in pet histories. Set inactive instead.'
-      );
-    }
+
+    // Instead of blocking, we nullify the reference in history records 
+    // so the record remains but the link to the (deleted) catalog entry is gone.
+    await PetVaccineRecord.updateMany(
+      { catalogVaccine: vaccine._id },
+      { $set: { catalogVaccine: null } }
+    );
+
     await Vaccine.findByIdAndDelete(vaccine._id);
     res.status(200).json({ message: 'Removed' });
   } catch (error) {

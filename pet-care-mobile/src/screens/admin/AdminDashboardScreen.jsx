@@ -52,6 +52,8 @@ export default function AdminDashboardScreen({ navigation }) {
       navigation.navigate('AdminAppointmentApproval');
     } else if (item === 'Vaccine') {
       navigation.navigate('AdminVaccineCatalog');
+    } else if (item === 'VaccineRecords') {
+      navigation.navigate('AdminVaccineRecords');
     } else if (item === 'Grooming') {
       navigation.navigate('AdminGroomingManagement');
     } else if (item === 'Boarding') {
@@ -102,7 +104,8 @@ export default function AdminDashboardScreen({ navigation }) {
         <View style={styles.grid}>
           <AdminCard title="Vets" iconName="user-md" iconType={FontAwesome5} onPress={() => handleAction('Vet')} />
           <AdminCard title="Appointments" iconName="calendar-alt" iconType={FontAwesome5} onPress={() => handleAction('Appointments')} />
-          <AdminCard title="Vaccines" iconName="syringe" iconType={FontAwesome5} onPress={() => handleAction('Vaccine')} />
+          <AdminCard title="Vaccine Catalog" iconName="list-ul" iconType={FontAwesome5} onPress={() => handleAction('Vaccine')} />
+          <AdminCard title="Vaccine Records" iconName="syringe" iconType={FontAwesome5} onPress={() => handleAction('VaccineRecords')} />
           <AdminCard title="Medication" iconName="pills" iconType={FontAwesome5} onPress={() => handleAction('Medication')} />
           <AdminCard title="Diet & Food" iconName="bone" iconType={FontAwesome5} onPress={() => handleAction('Diet')} />
           <AdminCard title="Grooming" iconName="cut" iconType={FontAwesome5} onPress={() => handleAction('Grooming')} />

@@ -147,6 +147,28 @@ export default function VaccinationsScreen({ navigation }) {
     }
   };
 
+  const deleteRecord = (id) => {
+    Alert.alert(
+      'Remove record',
+      'Are you sure you want to remove this vaccination from history?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await api.delete(`/vaccines/records/${id}`, authHeader);
+              fetchRecords(selectedPet._id, true);
+            } catch (e) {
+              Alert.alert('Error', e.response?.data?.message || 'Could not delete');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const formatDate = (d) =>
     d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
@@ -288,8 +310,13 @@ export default function VaccinationsScreen({ navigation }) {
                         </Text>
                       )}
                     </View>
-                    <View style={[styles.badge, badge.style]}>
-                      <Text style={styles.badgeText}>{badge.label}</Text>
+                    <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                      <View style={[styles.badge, badge.style]}>
+                        <Text style={styles.badgeText}>{badge.label}</Text>
+                      </View>
+                      <TouchableOpacity onPress={() => deleteRecord(r._id)} style={styles.trashBtn}>
+                        <FontAwesome5 name="trash-alt" size={14} color="#FF5252" />
+                      </TouchableOpacity>
                     </View>
                   </View>
                   {r.notes ? (
@@ -437,4 +464,13 @@ const styles = StyleSheet.create({
   },
   viewDocBtn: { marginTop: 10, backgroundColor: '#E3F2FD', borderRadius: 8, padding: 10, alignItems: 'center' },
   viewDocText: { color: '#1976D2', fontWeight: 'bold', fontSize: 13 },
+  trashBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#FFF0F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+  },
 });
